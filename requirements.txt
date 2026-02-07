@@ -3,3 +3,5 @@ scikit-learn
 pandas
 streamlit-lottie
 numpy
+altair==4.2.2
+
