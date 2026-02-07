@@ -3,6 +3,12 @@ import pickle
 import numpy as np
 import requests
 from streamlit_lottie import st_lottie
+# stream.py (add near top)
+import pandas as pd
+from forecastutils import forecast_7days_iterative
+# import your model objects from model.py
+from model import knn_reg, knn_clf, scaler, rain_le
+
 
 # --- 1. CONFIGURATION ---
 st.set_page_config(
@@ -176,3 +182,20 @@ else:
                     st_lottie(lottie_sun, height=120, key="sun")
                 else:
                     st.success("☀️ Sunny Day")
+    # --- 7-DAY ITERATIVE FORECAST (ADDED) ---
+# This uses the same input variables you already collect in the form:
+# min_temp, humidity, pressure, wind_speed, temp_9am
+# (They exist because your form defines them with default values.)
+
+if st.button("RUN 7-DAY FORECAST"):
+    try:
+        start_features = [min_temp, humidity, pressure, wind_speed, temp_9am]
+        df7 = forecast_7days_iterative(knn_reg, knn_clf, scaler, rain_le, start_features, days=7)
+
+        st.markdown("### 📅 7-Day Forecast (iterative)")
+        st.dataframe(df7)              # interactive table for the 7-day forecast
+        st.line_chart(df7.set_index('day')['PredMaxTemp'])  # simple chart of predicted max temps
+    except Exception as e:
+        st.error(f"Error producing 7-day forecast: {e}")
+
+            
