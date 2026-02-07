@@ -5,5 +5,8 @@ streamlit-lottie
 numpy
 streamlit>=1.32
 altair>=5
+matplotlib
+seaborn
+
 
 
